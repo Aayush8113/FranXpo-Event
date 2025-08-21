@@ -2,13 +2,19 @@ import React, { useEffect, useRef, useState } from "react";
 import "./OurPartners.css";
 import venueLogo from "../assets/logo/venue_partner.jpeg";
 import franmaxLogo from "../assets/logo/franmax_logo.png";
+import BrandVolLogo from '../assets/logo/brand _vol.png';
+// import GujaratLogo from '../assets/logo/gujarat_samachar.png';
+// import DivayLogo from '../assets/logo/divay_bhaskar.png';
+// import TimesLogo from '../assets/logo/times_of.jpeg';
 
 const OurPartners = () => {
   const partners = [
-    { name: "Radio FM Partner", logo: venueLogo,company_name:"Radio FM"}, // change when real logo available
-    { name: "Venue Partner", logo: venueLogo,company_name:"Taj Skyline"},
+    // { name: "Print Media Partner", logo: GujaratLogo,company_name:"Gujarat Samachar"},
+    // { name: "Print Media Partner", logo: DivayLogo,company_name:"Divya Bhaskar"},
+    // { name: "Print Media Partner", logo: TimesLogo,company_name:"Times Of India"}, // change when real logo available
+    // { name: "Venue", logo: venueLogo,company_name:"Taj Skyline"},
     { name: "Franchise Partner", logo: franmaxLogo,company_name:"Franmax India"},
-    { name: "Digital Media Partner", logo: venueLogo,company_name:"BrandVol"}, // change when real logo available
+    { name: "Digital Media Partner", logo: BrandVolLogo,company_name:"BrandVol"}, // change when real logo available
     { name: "Leasing Partner", logo: venueLogo,company_name:"CommVol"}, // change when real logo available
   ];
 

@@ -1,8 +1,8 @@
 import React from "react";
 import "./ExclusiveRights.css";
 import { FaCrown, FaBullhorn, FaHandshake } from "react-icons/fa";
-import franmaxLogo from "../assets/logo/logo.png";   // replace with your actual logo
-// import brandvolLogo from "../assets/logo/brandvol.png"; // replace with your actual logo
+import franmaxLogo from "../assets/logo/franmax_logo.png";   // replace with your actual logo
+import brandvolLogo from "../assets/logo/brand _vol.png"; // replace with your actual logo
 // import commvolLogo from "../assets/logo/commvol.png";   // replace with your actual logo
 
 const ExclusiveRights = () => {
@@ -12,7 +12,7 @@ const ExclusiveRights = () => {
         {/* Heading */}
         <h2 className="exclusive-title">Exclusive Rights</h2>
         <p className="exclusive-subtitle">
-          FranExpo 2025 is proudly powered by trusted partners who make this event extraordinary.
+          Franchise Expo 2025 is proudly powered by trusted partners who make this event extraordinary.
         </p>
 
         {/* Partner Cards */}
@@ -26,7 +26,7 @@ const ExclusiveRights = () => {
 
           <div className="exclusive-card">
             <FaBullhorn className="exclusive-icon" />
-            <img src={franmaxLogo} alt="BrandVol" className="exclusive-logo" />
+            <img src={brandvolLogo} alt="BrandVol" className="exclusive-logo" />
             <h3>Digital Media Partner</h3>
             <p>BrandVol</p>
           </div>
@@ -35,7 +35,7 @@ const ExclusiveRights = () => {
             <FaHandshake className="exclusive-icon" />
             <img src={franmaxLogo} alt="CommVol" className="exclusive-logo" />
             <h3>Leasing Partner</h3>
-            <p>CommVol</p>
+            <p>Clarify Commercial</p>
           </div>
         </div>
       </div>

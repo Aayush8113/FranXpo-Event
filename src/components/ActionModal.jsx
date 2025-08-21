@@ -31,7 +31,7 @@ const ActionModal = ({ onClose }) => {
             </div>
 
             {/* Heading */}
-            <h2 className="modal-title">Join FranExpo 2025</h2>
+            <h2 className="modal-title">Join Franchise Expo 2025</h2>
             <p className="modal-subtitle">
               Explore endless opportunities, connect with industry leaders, and grow your network.
             </p>
@@ -48,7 +48,7 @@ const ActionModal = ({ onClose }) => {
               </div>
               <div className="benefit-card">
                 <FaBuilding className="benefit-icon" />
-                <p>700+ Business Visitors</p>
+                <p>1000+ Business Visitors</p>
               </div>
             </div>
 
@@ -60,9 +60,9 @@ const ActionModal = ({ onClose }) => {
               >
                 Stall Booking
               </button>
-              <button className="modal-btn sponsor">
+              {/* <button className="modal-btn sponsor">
                 Sponsor Registration
-              </button>
+              </button> */}
               <button 
                 className="modal-btn investor" 
                 onClick={() => setActiveModal("investor")}

@@ -4,7 +4,7 @@ import { FaPhoneAlt, FaEnvelope, FaFacebook, FaInstagram, FaLinkedin, FaTwitter 
 
 const ContactSection = () => {
   return (
-    <section className="contact-section">
+    <section className="contact-section" id="contact">
       <div className="contact-container">
         {/* Heading */}
         <h2 className="contact-title">Contact Us</h2>
@@ -21,6 +21,10 @@ const ContactSection = () => {
               <a href="tel:+918140058080" className="no-link-style">
                 +91 81400 58080
               </a>
+              <br />
+              <a href="tel:+918140073030" className="no-link-style">
+                +91 81400 73030
+              </a>
             </div>
           </div>
 
@@ -30,18 +34,8 @@ const ContactSection = () => {
               <h4>Email Us</h4>
               <ul>
                 <li>
-                  <a href="mailto:info@franmaxindia.com" className="no-link-style">
-                    info@franmaxindia.com
-                  </a>
-                </li>
-                <li>
                   <a href="mailto:events@franmaxindia.com" className="no-link-style">
                     events@franmaxindia.com
-                  </a>
-                </li>
-                <li>
-                  <a href="mailto:support@franmaxindia.com" className="no-link-style">
-                    support@franmaxindia.com
                   </a>
                 </li>
               </ul>
