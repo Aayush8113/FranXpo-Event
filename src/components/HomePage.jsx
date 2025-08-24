@@ -112,7 +112,7 @@ import TestimonialsSection from "./TestimonialsSection";
 
 
 // Import your image from assets folder
-import thinkingImg from "../assets/9e5d6c19234ec1aeeba6b782e7c31073.jpg";
+import thinkingImg from "../assets/icon lmage.png";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -210,6 +210,7 @@ const FloatingThought = () => {
           const touch = e.touches[0];
           startDrag(touch.clientX, touch.clientY);
         }}
+        
       />
       {showMessage && (
         <div className="thought-message">
