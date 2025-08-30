@@ -110,10 +110,8 @@ import TestimonialsSection from "./TestimonialsSection";
 import ParticipatingBrands from "./ParticipatingBrands";
 // import OpportunitiesSection from "./OpportunitiesSection"
 
-
-
 // Import your image from assets folder
-import thinkingImg from "../assets/9e5d6c19234ec1aeeba6b782e7c31073.jpg";
+import thinkingImg from "../assets/boy.png";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -195,6 +193,17 @@ const FloatingThought = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Click outside detection to close the message
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (boxRef.current && !boxRef.current.contains(e.target)) {
+        setShowMessage(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div
       ref={boxRef}
@@ -257,8 +266,6 @@ const Homepage = () => {
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
           <ContactSection />
         </motion.div>
-
-
 
         {/* <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
           <TestimonialsSection />
