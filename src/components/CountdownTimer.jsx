@@ -175,7 +175,7 @@ import "./CountdownTimer.css";
 const CountdownTimer = () => {
   // Countdown calculation
   const calculateTimeLeft = () => {
-    const targetDate = new Date("2025-09-13T00:00:00");
+  const targetDate = new Date("2025-09-14T10:00:00");
     const now = new Date();
     const difference = targetDate - now;
 

@@ -11,7 +11,7 @@ const RegisterModal = ({ onClose }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    contact: "",
+    phone: "",
     state: null,
     city: null,
   });
@@ -23,6 +23,7 @@ const RegisterModal = ({ onClose }) => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [termsModalOpen, setTermsModalOpen] = useState(false);
 
+  // Prevent background scroll when modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -30,6 +31,7 @@ const RegisterModal = ({ onClose }) => {
     };
   }, []);
 
+  // Fetch states once
   useEffect(() => {
     const fetchStates = async () => {
       setLoadingStates(true);
@@ -37,7 +39,7 @@ const RegisterModal = ({ onClose }) => {
         const res = await fetch(getApiUrl("get-indian-states.php"));
         const data = await res.json();
         setStates(data.map((s) => ({ value: s.id, label: s.name })));
-      } catch (err) {
+      } catch {
         toast.error("Failed to load states.");
       } finally {
         setLoadingStates(false);
@@ -46,6 +48,7 @@ const RegisterModal = ({ onClose }) => {
     fetchStates();
   }, []);
 
+  // Fetch cities whenever state changes
   useEffect(() => {
     const fetchCities = async () => {
       if (!formData.state) {
@@ -59,7 +62,7 @@ const RegisterModal = ({ onClose }) => {
         );
         const data = await res.json();
         setCities(data.map((c) => ({ value: c.id, label: c.name })));
-      } catch (err) {
+      } catch {
         toast.error("Failed to load cities.");
       } finally {
         setLoadingCities(false);
@@ -69,9 +72,11 @@ const RegisterModal = ({ onClose }) => {
   }, [formData.state]);
 
   const handleInputChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value.trim() });
+
   const handleStateChange = (selected) =>
     setFormData({ ...formData, state: selected, city: null });
+
   const handleCityChange = (selected) =>
     setFormData({ ...formData, city: selected });
 
@@ -80,143 +85,104 @@ const RegisterModal = ({ onClose }) => {
     if (!formData.email.trim()) return "Email is required";
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) return "Invalid email address";
-    if (!formData.contact.trim()) return "Contact number is required";
-    const contactRegex = /^[6-9][0-9]{9}$/;
-    if (!contactRegex.test(formData.contact))
-      return "Contact must start with 6,7,8,9 and be 10 digits";
+    if (!formData.phone.trim()) return "Contact number is required";
+    const phoneRegex = /^[6-9][0-9]{9}$/;
+    if (!phoneRegex.test(formData.phone))
+      return "Contact must start with 6-9 and be 10 digits";
     if (!formData.state) return "Please select a state";
     if (!formData.city) return "Please select a city";
     return null;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
     if (!termsAccepted) {
-      toast.error("You must accept the Terms and Conditions to proceed.");
+      toast.error("You must accept Terms and Conditions.");
       return;
     }
-
     const error = validateForm();
     if (error) {
       toast.error(error);
       return;
     }
+    saveRegistration();
+  };
 
+  const saveRegistration = async () => {
     setLoading(true);
     try {
-      const res = await fetch(getApiUrl("validate-user.php"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: formData.email.trim(),
-          contact: formData.contact.trim(),
-        }),
-      });
-      const data = await res.json();
-      setLoading(false);
-      if (data.exists) toast.error(data.message);
-      else {
-        toast.success(data.message);
-        startPayment();
-      }
-    } catch (err) {
-      setLoading(false);
-      toast.error("Server error while validating user.");
-      console.error(err);
-    }
-  };
-
-  const startPayment = () => {
-    const amount = 499;
-    const apiKey = "rzp_live_R6nEN2n0JyWlrV";
-    const options = {
-      key: apiKey,
-      amount: amount * 100,
-      currency: "INR",
-      name: "FRANMAX INDIA",
-      description: "Registration Payment",
-      image: "http://franmaxindia.com/images/icon.png",
-      theme: { color: "#156beb" },
-      handler: function (response) {
-        saveRegistration(response.razorpay_payment_id);
-      },
-      prefill: {
+      const payload = {
         name: formData.name,
         email: formData.email,
-        contact: formData.contact,
-      },
-    };
-    const rzp = new window.Razorpay(options);
-    rzp.open();
-  };
-
-  const saveRegistration = async (paymentId) => {
-    try {
-      const payload = {
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        contact: formData.contact.trim(),
+        phone: formData.phone,
         state_id: formData.state.value,
         city_id: formData.city.value,
-        fee: 499,
-        payment_id: paymentId,
       };
+      console.log("Sending payload:", payload);
+
       const res = await fetch(getApiUrl("register-user.php"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+
       const data = await res.json();
+      setLoading(false);
       if (data.success) {
         toast.success("Registration successful!");
-        setTimeout(() => onClose(), 2000);
-      } else toast.error(data.message || "Registration failed");
+        setTimeout(() => {
+          if (onClose) {
+            onClose();
+            window.location.href = "/"; // Redirect to homepage
+          } else {
+            window.history.back();
+          }
+        }, 2000);
+      } else {
+        toast.error(data.message || "Registration failed");
+      }
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to save registration.");
+      setLoading(false);
+      toast.error("Network error while saving registration.");
+      console.error("Fetch error:", err);
     }
   };
 
-  // Terms content
+  // Handles close for both popup and page contexts
+  const handleClose = () => {
+    if (onClose) {
+       window.location.href = "https://franxpo.com/"; // Redirect to homepage // Redirect to homepage
+    } else {
+      window.history.back();
+    }
+  };
+
   const termsText = [
-    "Payment Purpose: The payment collected covers only the visiting charges. Food, accommodation, travel, and additional services are NOT included.",
-    "Non-Refundable Payment: Once paid, it is non-refundable unless specified in writing.",
-    "Confirmation of Services: Your booking is confirmed only after successful payment through Razorpay.",
-    "Additional Costs: Any extra costs during the visit will be borne by the customer.",
-    "Payment Security: All payments are secure via Razorpay. We do not store card/payment details.",
+    "Payment covers only visiting charges. Food, travel, stay excluded.",
+    "Non-refundable unless specified in writing.",
+    "Booking confirmed only after Razorpay payment.",
+    "Additional costs borne by customer.",
+    "Payments secure via Razorpay. No card details stored.",
     <>
-      Dispute Resolution: Contact us at <FaEnvelope />{" "}
-      <a href="mailto:events@franmaxindia.com">events@franmaxindia.com</a> or{" "}
-      <a href="tel:+91" className="no-link-style">
-        <FaPhone /> +91 81400 58080
-      </a>
+      Dispute Resolution: Contact <FaEnvelope />{" "}
+      <a href="mailto:events@franmaxindia.com">events@franmaxindia.com</a>{" "}
+      or <FaPhone /> +91 81400 58080
     </>,
-    "Right to Amend: We may update these terms at any time without prior notice.",
+    "We may update terms without prior notice.",
   ];
 
   return (
     <>
       <div className="modal-overlay">
         <div className="modal register-modal">
-          <button className="close-btn" onClick={onClose}>
+          <button className="close-btn" onClick={handleClose}>
             &times;
           </button>
 
           <div className="modal-header">
             <img src={logo} alt="Franmax Expo Logo" className="company-logo" />
-            <h2>Register for Franmax Expo 2025</h2>
+            <h2>Register for Franchise Expo 2025</h2>
             <p className="subtitle">Secure your spot today</p>
-          </div>
-
-          <div className="benefits-section">
-            <h3>Why Attend?</h3>
-            <ul>
-              <li>Discover top franchise opportunities</li>
-              <li>Meet investors and industry experts</li>
-              <li>Learn from keynote speakers and workshops</li>
-              <li>Network with decision makers</li>
-            </ul>
           </div>
 
           {loading && <p className="loading-text">Processing...</p>}
@@ -244,9 +210,9 @@ const RegisterModal = ({ onClose }) => {
             <div className="form-row">
               <input
                 type="tel"
-                name="contact"
+                name="phone"
                 placeholder="Contact Number"
-                value={formData.contact}
+                value={formData.phone}
                 onChange={handleInputChange}
                 required
               />
@@ -259,7 +225,6 @@ const RegisterModal = ({ onClose }) => {
                 onChange={handleStateChange}
                 isLoading={loadingStates}
                 placeholder="Select State"
-                isClearable
               />
               <Select
                 options={cities}
@@ -268,11 +233,9 @@ const RegisterModal = ({ onClose }) => {
                 isLoading={loadingCities}
                 placeholder="Select City"
                 isDisabled={!formData.state}
-                isClearable
               />
             </div>
 
-            {/* Terms Checkbox */}
             <div className="form-row terms">
               <label>
                 <input
@@ -282,7 +245,6 @@ const RegisterModal = ({ onClose }) => {
                 />
                 I agree to the{" "}
                 <span
-                  className="terms-link"
                   onClick={() => setTermsModalOpen(true)}
                   style={{
                     color: "#ff6b00",
@@ -298,15 +260,14 @@ const RegisterModal = ({ onClose }) => {
             <button
               type="submit"
               className="submit-btn"
-              disabled={!termsAccepted}
+              disabled={!termsAccepted || loading}
             >
-              Submit & Pay ₹499
+              Book Seat
             </button>
           </form>
         </div>
       </div>
 
-      {/* Terms Modal */}
       {termsModalOpen && (
         <div className="modal-overlay">
           <div className="modal terms-modal">

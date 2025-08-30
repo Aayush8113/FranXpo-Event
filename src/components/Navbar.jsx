@@ -24,15 +24,32 @@
 
 
 
-
 import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { navLinks } from "./navlinks.js";
 import "./Navbar.css";
 import logo from "../assets/logo/logo.png";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
+
+  const handleAnchorClick = (link) => {
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        const section = document.querySelector(link.path);
+        if (section) section.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else {
+      const section = document.querySelector(link.path);
+      if (section) section.scrollIntoView({ behavior: "smooth" });
+    }
+    setMenuOpen(false);
+  };
 
   return (
     <nav className="top-navbar">
@@ -40,15 +57,33 @@ const Navbar = () => {
         <img src={logo} alt="Logo" />
       </div>
 
-      {/* Navigation Links */}
-      <ul className={`nav-links ${menuOpen ? "show" : ""}`}>
-        <li><a href="#home" onClick={() => setMenuOpen(false)}>Home</a></li>
-        <li><a href="#about" onClick={() => setMenuOpen(false)}>About Us</a></li>
-        <li><a href="#exclusive-rights" onClick={() => setMenuOpen(false)}>Exclusivity</a></li>
-        <li><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a></li>
-      </ul>
+    <ul className={`nav-links ${menuOpen ? "show" : ""}`}>
+  {navLinks
+    .filter(link => link.showInNavbar) // only show links marked for Navbar
+    .map((link) =>
+      link.type === "anchor" ? (
+        <li key={link.name}>
+          <a
+            href={link.path}
+            onClick={(e) => {
+              e.preventDefault();
+              handleAnchorClick(link);
+            }}
+          >
+            {link.name}
+          </a>
+        </li>
+      ) : (
+        <li key={link.name}>
+          <Link to={link.path} onClick={() => setMenuOpen(false)}>
+            {link.name}
+          </Link>
+        </li>
+      )
+    )}
+</ul>
 
-      {/* Hamburger Menu */}
+
       <div className="hamburger" onClick={toggleMenu}>
         <span></span>
         <span></span>

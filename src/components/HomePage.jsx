@@ -96,7 +96,7 @@
 
 
 
-import React, { useState,  useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import './HomePage.css';
 
@@ -107,12 +107,13 @@ import ContactSection from "./ContactSection";
 import OurPartners from "./OurPartners";
 import CountdownTimer from "./CountdownTimer";
 import TestimonialsSection from "./TestimonialsSection";
+import ParticipatingBrands from "./ParticipatingBrands";
 // import OpportunitiesSection from "./OpportunitiesSection"
 
 
 
 // Import your image from assets folder
-import thinkingImg from "../assets/icon lmage.png";
+import thinkingImg from "../assets/9e5d6c19234ec1aeeba6b782e7c31073.jpg";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -210,7 +211,6 @@ const FloatingThought = () => {
           const touch = e.touches[0];
           startDrag(touch.clientX, touch.clientY);
         }}
-        
       />
       {showMessage && (
         <div className="thought-message">
@@ -251,8 +251,14 @@ const Homepage = () => {
         </motion.div>
 
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
+          <ParticipatingBrands />
+        </motion.div>
+
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
           <ContactSection />
         </motion.div>
+
+
 
         {/* <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
           <TestimonialsSection />
